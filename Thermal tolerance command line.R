@@ -41,10 +41,10 @@ km_fit <- survfit(surv_obj ~ species, data = surv_data)
 # Plot survival curves
 ggsurvplot(
   km_fit, data = surv_data, pval = TRUE, 
-  risk.table = TRUE, conf.int = TRUE,
+  risk.table = TRUE, conf.int = FALSE,
   title = "Kaplan-Meier Survival under Heat Stress",
   xlab = "Time (hours)", ylab = "Survival Probability",
-  legend.title = "Species", legend.labs = c("C. elegans N2", "C. brenneri isolate")
+  legend.title = "Species", legend.labs = c("C. brenneri isolate", "C. elegans N2")
 )
 # Log-rank test to compare survival curves
 survdiff(Surv(time, status) ~ species, data = surv_data)
