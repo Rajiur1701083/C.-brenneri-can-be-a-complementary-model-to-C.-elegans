@@ -2,18 +2,20 @@ library(survival)
 library(survminer)
 library(dplyr)
 raw_data <- data.frame(
-  time = c(1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,24,24,24),
-  ce = c(100,100,100,100,100,100,100,95,96.5,81,79,85,32,41,39,0,0,0),
-  cb = c(100,100,100,100,100,100,100,100,100,95,89,93,79,77,72,38,45,40)
+  time = c(1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,10,10,10,15,15,15,20,20,20,24,24,24),
+  ce = c(100,100,100,100,100,100,100,95,96.5,81,79,85,32,41,39,33,35,37,24,21,19,11,9,6,0,0,0),
+  cb = c(100,100,100,100,100,100,100,100,100,95,89,93,79,77,72,67,64,63,57,52,56,44,49,50,38,45,40)
 )
 
-long_data <- raw_data %>%
-  mutate(replicate = rep(1:3, times = 6)) %>%
+llong_data <- raw_data %>%
+  mutate(replicate = rep(1:3, length.out = n())) %>%
   tidyr::pivot_longer(cols = c(ce, cb), names_to = "species", values_to = "percent_alive") %>%
-  mutate(n_alive = round(percent_alive),
-         n_dead = 100 - n_alive,
-         status = 1,
-         time = as.numeric(time))
+  mutate(
+    n_alive = round(percent_alive),
+    n_dead = 100 - n_alive,
+    status = 1,
+    time = as.numeric(time)
+  )
 
 expand_individuals <- function(df) {
   do.call(rbind, lapply(1:nrow(df), function(i) {
@@ -34,7 +36,7 @@ km_fit <- survfit(surv_obj ~ species, data = surv_data)
 
 ggsurvplot(
   km_fit, data = surv_data,
-  conf.int = TRUE, pval = TRUE,
+  conf.int = FALSE, pval = TRUE,
   risk.table = TRUE,
   title = "Bacterial killing assay Under P. aeruginosa infection",
   xlab = "Time (hours)",
