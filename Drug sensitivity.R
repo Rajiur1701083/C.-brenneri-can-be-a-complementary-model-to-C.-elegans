@@ -1,5 +1,3 @@
-
-
 #Ivermectin
 # Step 1: Create the wide-format dataset
 df <- tribble(
